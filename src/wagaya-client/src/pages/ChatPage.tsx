@@ -3,11 +3,11 @@ import { useAuthStore } from '../stores/authStore';
 import { useChatStore } from '../stores/chatStore';
 import { useSignalR } from '../hooks/useSignalR';
 import { useVoice } from '../hooks/useVoice';
-import { LogOut, Hash, Mic, MicOff, Send, Phone, PhoneOff } from 'lucide-react';
+import { LogOut, Hash, Mic, MicOff, Send, PhoneOff } from 'lucide-react';
 
 export default function ChatPage() {
     const { user, logout } = useAuthStore();
-    const { channels, fetchChannels, createChannel, currentChannelId, selectChannel, messages, fetchMessages, addMessage } = useChatStore();
+    const { channels, fetchChannels, createChannel, currentChannelId, selectChannel, messages, fetchMessages } = useChatStore();
     const { chatConnection } = useSignalR();
     const { joinVoice, leaveVoice, isJoined, currentVoiceChannelId } = useVoice();
     const [newMessage, setNewMessage] = useState('');
@@ -21,7 +21,7 @@ export default function ChatPage() {
     useEffect(() => {
         if (!chatConnection) return;
 
-        chatConnection.on('ReceiveMessage', (username, content) => {
+        chatConnection.on('ReceiveMessage', (_username: string, _content: string) => {
             // This is a simplified handler. Ideally we receive the full message object or fetch it.
             // For now, let's refetch messages if we are in the channel.
             // Or better, let's just wait for real implementation via events.
@@ -40,30 +40,7 @@ export default function ChatPage() {
         };
     }, [chatConnection, currentChannelId, fetchMessages]);
 
-    const handleSendMessage = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!currentChannelId || !newMessage.trim()) return;
-
-        try {
-            // Send via REST API (which saves to DB)
-            // ChatHub could assist but usually REST is safer for persistence first
-            // Or we call ChatHub.SendMessage?
-            // Implementation Plan said API saves DB.
-
-            // Wait, wait. API is simpler.
-            const response = await fetch(`/api/channels/${currentChannelId}/messages`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Cookie': document.cookie }, // axios uses credentials
-                // actually we use api client
-            });
-            // We should use store action or api client
-            // Let's assume we invoke a store action or api call here.
-        } catch (err) {
-            console.error(err);
-        }
-    };
-
-    // Real implementation of Send using store/api
+    // Send message handler
     const onSend = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!currentChannelId || !newMessage.trim()) return;

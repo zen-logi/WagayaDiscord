@@ -22,7 +22,7 @@ export const useVoice = () => {
     const sourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
 
     // Audio Playback
-    const playQueueRef = useRef<Float32Array[]>([]);
+    const playQueueRef = useRef<Float32Array<ArrayBuffer>[]>([]);
     const nextStartTimeRef = useRef(0);
 
     // Initialize AudioContext
@@ -39,7 +39,7 @@ export const useVoice = () => {
     useEffect(() => {
         if (!voiceConnection) return;
 
-        voiceConnection.on('ReceiveAudio', (senderId, audioDataBase64) => {
+        voiceConnection.on('ReceiveAudio', (_senderId: string, audioDataBase64: string) => {
             // Decode Base64 to Float32
             const binaryString = window.atob(audioDataBase64);
             const len = binaryString.length;
@@ -56,7 +56,7 @@ export const useVoice = () => {
                 float32[i] = int16[i] / 32768.0;
             }
 
-            playQueueRef.current.push(float32);
+            playQueueRef.current.push(new Float32Array(float32.buffer.slice(0) as ArrayBuffer));
             schedulePlayback();
         });
 
