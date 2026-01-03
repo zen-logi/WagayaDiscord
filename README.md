@@ -15,7 +15,7 @@ ASP.NET Core 10 / Entity Framework Core / SignalR / RNNoise / Cookie認証
 React 19 / TypeScript / Vite / Tailwind CSS v3 / Zustand / Web Audio API
 
 ### インフラ
-Docker & Docker Compose / Caddy / SQLite
+Docker & Docker Compose / SQLite
 
 ## 🛠️ セットアップ
 
@@ -46,7 +46,7 @@ Docker & Docker Compose / Caddy / SQLite
 
 4. **アクセス**
    ブラウザで以下にアクセスしてください：
-   [http://localhost](http://localhost)
+   [http://localhost:6120](http://localhost:6120)
 
 ## 📂 プロジェクト構成
 
@@ -67,7 +67,7 @@ WagayaDiscord/
 │       │   ├── services/       # APIクライアント
 │       │   └── stores/         # Zustandストア
 ├── docker-compose.yml          # コンテナオーケストレーション
-├── Caddyfile                   # リバースプロキシ設定
+├── Dockerfile                  # 統合ビルド設定
 └── .env.example                # 環境変数テンプレート
 ```
 

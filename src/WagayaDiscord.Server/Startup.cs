@@ -78,6 +78,10 @@ public class Startup
 
         app.UseCors("ClientPermission");
 
+        // 静的ファイル配信 (React build)
+        app.UseDefaultFiles();
+        app.UseStaticFiles();
+
         app.UseRouting();
 
         app.UseAuthentication();
@@ -88,6 +92,9 @@ public class Startup
             endpoints.MapControllers();
             endpoints.MapHub<ChatHub>("/hubs/chat");
             endpoints.MapHub<VoiceHub>("/hubs/voice");
+
+            // SPA フォールバック: APIやHubs以外は index.html を返す
+            endpoints.MapFallbackToFile("index.html");
         });
     }
 }
