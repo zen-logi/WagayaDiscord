@@ -1,0 +1,47 @@
+services:
+  backend:
+    build:
+      context: ./src/WagayaDiscord.Server
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./src/WagayaDiscord.Server:/app
+      - /app/obj
+      - /app/bin
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:5000
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./src/wagaya-client
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./src/wagaya-client:/app
+      - /app/node_modules
+    environment:
+      - CHOKIDAR_USEPOLLING=true # Better file watching for Windows/WSL
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - frontend
+      - backend
+    restart: unless-stopped
+
+volumes:
+  caddy_data:
+  caddy_config:
