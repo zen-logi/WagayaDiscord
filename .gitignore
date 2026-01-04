@@ -46,3 +46,5 @@ TestResults/
 # WagayaDiscord Specific
 *.db
 *.log
+certs/
+data/

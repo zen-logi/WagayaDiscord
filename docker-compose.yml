@@ -7,7 +7,9 @@ services:
       - "6120:6120"
     volumes:
       - ./data:/app/data
+      - ./certs:/app/certs:ro
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_URLS=http://0.0.0.0:6120
+      - CERT_PATH=/app/certs/server.pfx
+      - CERT_PASSWORD=password
     restart: unless-stopped
